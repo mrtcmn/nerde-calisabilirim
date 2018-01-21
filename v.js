@@ -18,12 +18,6 @@ provider.addScope('https://www.googleapis.com/auth/plus.me');
 
 
 
-function veriGonderme(data) {
-  firebase.database().ref('veri').set({
-    veri: data
-  });
-
-}
 
 function girisGoogle () {
   var provider = new firebase.auth.GoogleAuthProvider();

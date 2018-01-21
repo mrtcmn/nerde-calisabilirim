@@ -48,40 +48,49 @@
         container: 'map',
         style: 'mapbox://styles/mapbox/dark-v9',
         center: [28.98, 41.01],
-        zoom: 12
+        zoom: 13
       });
 
       map.on('load', function() {
-        // Add a layer showing the places.
-        map.addLayer({
-          "id": "places",
-          "type": "symbol",
-          "source": {
-            "type": "geojson",
-            "data": {
-              "type": "FeatureCollection",
-              "features": [{
-                "type": "Feature",
-                "properties": {
-                  "description": "<strong>Mdunt Pleaghgggggghghsant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
-                  "icon": "theatre"
-                },
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [29.043994, 40.194491]
-                }
-              }]
+        var existData = [];
+        firebase.database().ref('/veri').once('value').then(function(snapshot) {
+          var data = snapshot.val();
+          console.log(data);
+          for (let item in data) {
+            console.log(item)
+            existData.push({
+              "type": "Feature",
+              "properties": {
+                "description":"<h4>"+ data[item].name+"</h1>"+data[item].decs
+              },
+              "geometry": {
+                "type": "Point",
+                "coordinates": [data[item].coordinates[0], data[item].coordinates[1]]
+              }
+            });
+          };
+
+
+          map.addLayer({
+            "id": "mekanlar",
+            "type": "symbol",
+            "source": {
+              "type": "geojson",
+              "data": {
+                "type": "FeatureCollection",
+                "features": existData
+              }
+            },
+            "layout": {
+              "icon-image": "circle-15",
+              "icon-allow-overlap": true
             }
-          },
-          "layout": {
-            "icon-image": "{icon}-15",
-            "icon-allow-overlap": true
-          }
+          });
         });
 
 
 
-        map.on('click', 'places', function(e) {
+        map.on('click', 'mekanlar', function(e) {
           new mapboxgl.Popup()
             .setLngLat(e.features[0].geometry.coordinates)
             .setHTML(e.features[0].properties.description)

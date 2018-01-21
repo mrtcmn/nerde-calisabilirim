@@ -9,8 +9,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
-    <script src="v.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="v.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src='https://api.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.js'></script>
   <link href='https://api.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.css' rel='stylesheet' />
 
@@ -73,37 +73,44 @@
 
             });
 
-            firebase.database().ref('/veri/').once('value').then(function(snapshot) {
-          console.log(snapshot)
+            var existData = [];
+            firebase.database().ref('/veri').once('value').then(function(snapshot) {
+              var data = snapshot.val();
+              console.log(data);
+              for (let item in data) {
+                console.log(item)
+                existData.push({
+                  "type": "Feature",
+                  "properties": {
+                    "description": data[item].decs,
+                    "icon": "theatre"
+                  },
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [data[item].coordinates[0], data[item].coordinates[1]]
+                  }
+                });
+              };
 
-            });
 
-            var a = map.addLayer({
-              "id": "mekanlar",
-              "type": "symbol",
-              "source": {
-                "type": "geojson",
-                "data": {
-                  "type": "FeatureCollection",
-                  "features": [{
-                    "type": "Feature",
-                    "properties": {
-                      "description": "<strong>Mdunt Pleaghgggggghghsant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
-                      "icon": "theatre"
-                    },
-                    "geometry": {
-                      "type": "Point",
-                      "coordinates": [29.043994, 40.194491]
-                    }
-                  }]
+              map.addLayer({
+                "id": "mekanlar",
+                "type": "symbol",
+                "source": {
+                  "type": "geojson",
+                  "data": {
+                    "type": "FeatureCollection",
+                    "features": existData
+                  }
+                },
+                "layout": {
+                  "icon-image": "circle-15",
+                  "icon-allow-overlap": true
                 }
-              },
-              "layout": {
-                "icon-image": "{icon}-15",
-                "icon-allow-overlap": true
-              }
+              });
             });
-            console.log(a);
+
+
 
 
 
@@ -168,6 +175,9 @@
 
           });
           $(document).ready(function() {
+
+
+
             $('input').on('input', function() {
               $('#' + this.id + 'v').text(this.value);
             });
@@ -180,7 +190,7 @@
                 newData[item.name] = item.value;
               });
               firebase.database().ref('veri').push(newData).then(function(snapshot) {
-                  window.location.replace('http://localhost:3000/');
+                window.location.replace('http://localhost:3000/');
               });
             });
           });
