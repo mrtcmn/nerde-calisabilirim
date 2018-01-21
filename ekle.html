@@ -73,7 +73,10 @@
 
             });
 
+            firebase.database().ref('/veri/').once('value').then(function(snapshot) {
+          console.log(snapshot)
 
+            });
 
             var a = map.addLayer({
               "id": "mekanlar",

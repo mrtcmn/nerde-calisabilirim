@@ -22,4 +22,14 @@ function veriGonderme(data) {
   firebase.database().ref('veri').set({
     veri: data
   });
+
+}
+
+function girisGoogle () {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider).then(function(result) {
+  window.location.replace('http://localhost:3000/ekle.html');
+}).catch(function(error) {
+
+});
 }
