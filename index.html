@@ -37,7 +37,7 @@
     <nav class="navbar navbar-expand-lg navbar-light siyahton">
       <div class="logo-nc"></div>
 
-      <button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#giris">Yeni yer ekle</button>
+      <button class="btn btn-light my-2 my-sm-0" data-toggle="modal" data-target="#giris">Yeni yer ekle</button>
     </nav>
   </header>
   <main role="main">
@@ -52,6 +52,31 @@
         zoom: 13
       });
 
+
+      function icon(deger, icon) {
+        deger = deger / 20;
+        deger = Math.round(deger);
+        var elem = "";
+
+        let count = 0;
+        while (count < 5) {
+
+          if (count < deger) {
+            elem += '<i class="' + icon + ' renkli" aria-hidden="true"></i>'
+          } else {
+            elem += '<i class="' + icon + ' soluk" aria-hidden="true"></i>'
+          }
+          count++;
+
+        }
+
+
+        return elem;
+
+
+      }
+
+
       map.on('load', function() {
         var existData = [];
         firebase.database().ref('/veri').once('value').then(function(snapshot) {
@@ -62,13 +87,31 @@
             existData.push({
               "type": "Feature",
               "properties": {
-                "description":"<h4>"+ data[item].name+"</h1>"+data[item].decs
+                "description": "<h4>" + data[item].name + "</h1>" + data[item].decs
               },
               "geometry": {
                 "type": "Point",
                 "coordinates": [data[item].coordinates[0], data[item].coordinates[1]]
               }
             });
+
+
+            let total = (parseInt(data[item].quiet) + parseInt(data[item].coffee) + parseInt(data[item].tea) + parseInt(data[item].wifi) + parseInt(data[item].cost) + parseInt(data[item].bigg) + parseInt(data[item].smallg) + parseInt(data[
+              item].together)) / 8;
+
+              total = Math.round(total);
+            var yeniData = '<tr><td>' + data[item].name + '</td>';
+            yeniData += '<td>' + icon(data[item].quiet, 'fa fa-bell-slash') + '</td>';
+            yeniData += '<td>' + icon(data[item].coffee, 'fa fa-coffee') + '</td>';
+            yeniData += '<td>' + icon(data[item].tea, 'fa fa-coffee') + '</td>';
+            yeniData += '<td>' + icon(data[item].wifi, 'fa fa-wifi') + '</td>';
+            yeniData += '<td>' + icon(data[item].cost, 'fa fa-usd') + '</td>';
+            yeniData += '<td style="padding: 14px;">' + total + '</td></tr>';
+
+
+            $("#veriAkis").append(yeniData);
+
+
           };
 
 
@@ -121,184 +164,33 @@
 
       <!-- Three columns of text below the carousel -->
       <div class="container">
-                <div class="row"  style="margin-top: 50px;">
-                <div class="col-md-12 text-center">
-                          <div class="outer-form">
-                    <table class="table-striped table table-bordered vertical">
-                          <thead style="color: white; font-weight: normal; background-color: black;" >
-                            <tr>
+        <div class="row" style="margin-top: 50px;">
+          <div class="col-md-12 text-center">
+            <div class="outer-form">
+              <table class="table-striped table table-bordered vertical">
+                <thead style="color: white; font-weight: normal; background-color: black;">
+                  <tr>
 
-                              <th  class="head">İsim</th>
-                              <th  class="head">Sessizlik</th>
-                              <th  class="head">Kahve</th>
-                              <th  class="head">Çay</th>
-                              <th  class="head">Wifi</th>
-                              <th  class="head">Hesap</th>
-                              <th  class="head">Total Paun</th>
-                            </tr>
-                          </thead>
+                    <th class="head">İsim</th>
+                    <th class="head">Sessizlik</th>
+                    <th class="head">Kahve</th>
+                    <th class="head">Çay</th>
+                    <th class="head">Wifi</th>
+                    <th class="head">Hesap</th>
+                    <th class="head">Toplam Puan</th>
+                  </tr>
+                </thead>
 
-                          <tbody style="border:1px solid transparent; background-color:#242424; color:#A1A6AB; text-align: left;">
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
+                <tbody style="border:1px solid transparent; background-color:#242424; color:#A1A6AB; text-align: left;" id="veriAkis">
 
-
-                             <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                            <tr>
-                              <td>WaLia</td>
-                              <td><i class="fa fa-bell-slash" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-coffee" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-wifi" aria-hidden="true"></i></td>
-                              <td><i class="fa fa-usd" aria-hidden="true"></i></td>
-                              <td style="padding: 14px;">02</td>
-                            </tr>
-
-                          </tbody>
-                        </table>
-                      </div>
-                  </div>
-              </div>
+                </tbody>
+              </table>
+            </div>
           </div>
-        <!-- /.col-lg-4 -->
-        <div class="col-lg-4">
-          <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <!-- /.col-lg-4 -->
-      </div>
-      <!-- /.row -->
-
-
-      <!-- START THE FEATURETTES -->
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">First featurette heading. <span class="text-muted">It'll blow your mind.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
         </div>
       </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7 order-md-2">
-          <h2 class="featurette-heading">Oh yeah, it's that good. <span class="text-muted">See for yourself.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5 order-md-1">
-          <img class="featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <div class="row featurette">
-        <div class="col-md-7">
-          <h2 class="featurette-heading">And lastly, this one. <span class="text-muted">Checkmate.</span></h2>
-          <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-        <div class="col-md-5">
-          <img class="featurette-image img-fluid mx-auto" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
-        </div>
-      </div>
-
-      <hr class="featurette-divider">
-
-      <!-- /END THE FEATURETTES -->
+    </div>
+    <!-- /.row -->
 
     </div>
     <!-- /.container -->
@@ -306,8 +198,7 @@
 
     <!-- FOOTER -->
     <footer class="container">
-      <p class="float-right"><a href="#">Back to top</a></p>
-      <p>&copy; 2017-2018 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+      <p>Murat Çimen - Oğuzhan Çimen</p>
     </footer>
   </main>
 
