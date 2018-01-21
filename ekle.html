@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    <script src="v.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.css' rel='stylesheet' />
+
+
+
+</head>
+
+<body>
+
+
+
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light siyahton">
+      <div class="logo-nc"></div>
+    </nav>
+  </header>
+
+  <main role="main">
+
+    <div class="row">
+      <div class="col-12 col-md-6">
+
+        <div id='map' style='width: 100%; height: 100vh;'></div>
+        <script>
+          mapboxgl.accessToken = 'pk.eyJ1IjoibXJ0Y21uIiwiYSI6IjdLY1NhWXcifQ.b3ND2jFjZB4Duobcu4Ykqg';
+          var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v9',
+            center: [28.98, 41.01],
+            zoom: 12
+          });
+          map.addControl(new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          }));
+
+
+
+          var newData = {
+            name: null,
+            decs: null,
+            quiet: null,
+            coffee: null,
+            tea: null,
+            wifi: null,
+            cost: null,
+            smallg: null,
+            bigg: null,
+            together: null,
+            coordinates: null
+          }
+
+          map.on('load', function() {
+            // Add a layer showing the places.
+            map.loadImage('http://localhost:3000/iconpin.png', function(error, image) {
+              if (error) throw error;
+              map.addImage('pin', image);
+
+            });
+
+
+
+            var a = map.addLayer({
+              "id": "mekanlar",
+              "type": "symbol",
+              "source": {
+                "type": "geojson",
+                "data": {
+                  "type": "FeatureCollection",
+                  "features": [{
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Mdunt Pleaghgggggghghsant</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
+                      "icon": "theatre"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [29.043994, 40.194491]
+                    }
+                  }]
+                }
+              },
+              "layout": {
+                "icon-image": "{icon}-15",
+                "icon-allow-overlap": true
+              }
+            });
+            console.log(a);
+
+
+
+            map.on('click', function(e) {
+
+              newData.coordinates ? map.removeSource('secmekanlar') : null;
+
+
+
+              var secili = [{
+                "type": "Feature",
+                "properties": {
+                  "description": "<strong>seçili</strong><p><a href=\"http://www.mtpleasantdc.com/makeitmtpleasant\" target=\"_blank\" title=\"Opens in a new window\">Make it Mount Pleasant</a> is a handmade and vintage market and afternoon of live entertainment and kids activities. 12:00-6:00 p.m.</p>",
+                  "icon": "theatre"
+                },
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [e.lngLat.lng, e.lngLat.lat]
+                }
+              }];
+
+              newData.coordinates = [e.lngLat.lng, e.lngLat.lat];
+
+
+              map.addLayer({
+                "id": "secmekanlar",
+                "type": "symbol",
+                "source": {
+                  "type": "geojson",
+                  "data": {
+                    "type": "FeatureCollection",
+                    "features": secili
+                  }
+                },
+                "layout": {
+                  "icon-image": "pin",
+                  "icon-allow-overlap": true
+                }
+              });
+
+              console.log(e.lngLat)
+            });
+
+            map.on('click', 'places', function(e) {
+              new mapboxgl.Popup()
+                .setLngLat(e.features[0].geometry.coordinates)
+                .setHTML(e.features[0].properties.description)
+                .addTo(map);
+            })
+
+            map.on('mouseenter', 'places', function() {
+              map.getCanvas().style.cursor = 'pointer';
+            });
+
+            // Change it back to a pointer when it leaves.
+            map.on('mouseleave', 'places', function() {
+              map.getCanvas().style.cursor = '';
+            });
+
+
+
+
+          });
+          $(document).ready(function() {
+            $('input').on('input', function() {
+              $('#' + this.id + 'v').text(this.value);
+            });
+
+            $("#newForm").submit(function(event) {
+              event.preventDefault();
+              var arr1 = $(this).serializeArray();
+              console.log(arr1)
+              arr1.forEach(function(item) {
+                newData[item.name] = item.value;
+              });
+              firebase.database().ref('veri').push(newData).then(function(snapshot) {
+                  window.location.replace('http://localhost:3000/');
+              });
+            });
+          });
+        </script>
+      </div>
+      <div class="col-12 col-md-6 yanmenu text-white">
+
+        <form id="newForm">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Mekanın ismi</label>
+            <input name="name" type="input" class="form-control" id="exampleInputEmail1" placeholder="Buranın ismi ne?" required>
+
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Adres Tarifi</label>
+            <textarea name="decs" type="password" class="form-control" id="exampleInputPassword1" placeholder="Adres tanımını giriniz"></textarea>
+            <small id="emailHelp" class="form-text text-muted">Okulu görünce hemen sağda, marketin yanı gibi..</small>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Sessiz bir yer mi?</label>
+            <input name="quiet" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>Çıt çıkmaz.</span><span style="float: right">Kulaklık taksam bile ses duyarım.</span></small>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Kahve nasıl?</label>
+            <input name="coffee" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>Kahve yapmayı bilmiyorlar!</span><span style="float: right">Kendimi İtalya'da hissettim.</span></small>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Peki ya çay?</label>
+            <input name="tea" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>Kaçak çay sanırım.</span><span style="float: right">Çay edebiyatı yapabilirim.</span></small>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Wifi nasıl?</label>
+            <input name="wifi" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>140p</span><span style="float: right">2K görüntü</span></small>
+            <div class="form-check">
+
+              <input class="form-check-input" type="checkbox" id="gridCheck">
+              <label class="form-check-label" for="defaultCheck1">Wifi ücretli servisler tarafından sağlanıyor.</label>
+            </div>
+
+          </div>
+
+
+
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">2 saat çalışıp kalksam kaç tl öderim?</label>
+            <input name="cost" id="quiet" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>3 tl</span><span style="float: right">40 tl</span></small>
+          </div>
+
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Küçük gruplar toplantı yapabilir mi?</label>
+            <input name="smallg" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>Anca bir kişi.</span><span style="float: right">Mümkün.</span></small>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Büyük gruplar toplantı yapabilir mi?</label>
+            <input name="bigg" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>Sıkışarak anca.</span><span style="float: right">Toplantı odaları bile var.</span></small>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Beraber ders çalışılabilir mi?</label>
+            <input name="together" class="form-control" type="range" step="10" value="50" min="0" max="100">
+            <small class="form-text text-muted"><span>İmkansız.</span><span style="float: right">Çalışılabilir.</span></small>
+          </div>
+
+
+          <button type="submit" class="btn btn-primary">Gönder</button>
+        </form>
+
+
+
+      </div>
+    </div>
+  </main>
+
+
+</body>
+
+</html>
